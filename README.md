@@ -12,8 +12,8 @@ This guide will help you set up the necessary tables and databases for the proje
 1. **Clone the Repository**
 
     ```bash
-    git clone <repository-url>
-    cd <repository-directory>
+    git clone <https://github.com/Teoman21/assure360.git>
+    cd <https://github.com/Teoman21/assure360.git>
     ```
 
 2. **Navigate to the Scripts Directory**
