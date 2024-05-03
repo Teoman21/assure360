@@ -45,7 +45,8 @@ connection.connect(err => {
                 FirstName VARCHAR(255),
                 LastName VARCHAR(255),
                 Role ENUM('Admin', 'Agent', 'Support') DEFAULT 'Agent',
-                CreateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                CreateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                Company VARCHAR(255)
             );
             
             CREATE TABLE IF NOT EXISTS Customers (
@@ -63,7 +64,7 @@ connection.connect(err => {
             CREATE TABLE IF NOT EXISTS Policies (
                 PolicyId INT AUTO_INCREMENT PRIMARY KEY,
                 CustomerId INT,
-                Type ENUM('Life', 'Health', 'Auto', 'Property'),
+                Type VARCHAR(255),
                 PolicyNumber VARCHAR(255),
                 StartDate DATE,
                 EndDate DATE,
@@ -117,7 +118,7 @@ connection.connect(err => {
             // Split the SQL statements and execute them individually
             const individualCreateTableStatements = createTablesSQL.split(';').filter(statement => statement.trim() !== '');
 
-            individualCreateTableStatements.forEach(sql => {
+            individualCreateTableStatements.    forEach(sql => {
                 connection.query(sql, (err, results) => {
                     if (err) {
                         console.error("Error creating tables: ", err.message);
