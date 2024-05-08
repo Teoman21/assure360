@@ -1,13 +1,16 @@
 // index.js
 const express = require('express');
 const bodyParser = require('body-parser');
-const poolPromise = require('./config/db.js'); // Adjusted to recognize it's a promise
+//IMPORT THE NECESSERY PATHS
+const poolPromise = require('./config/db.js'); 
 const authRoute = require("./routes/authRoute.js");
+const customerRoute = require("./routes/customerRouter.js")
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.path}`);
@@ -23,6 +26,7 @@ async function startServer() {
         connection.release(); // Release the connection back to the pool
 
         app.use('/auth', authRoute);
+        app.use('/api/customers',customerRoute);
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
         });
