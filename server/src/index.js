@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 const poolPromise = require('./config/db.js'); 
 const authRoute = require("./routes/authRoute.js");
 const customerRoute = require("./routes/customerRouter.js");
+const policiesRoute = require('./routes/policiesRouter');
+
+//IMPORT VERIFYTOKEN FOR AUTHORIZATION IN API
 const { verifyToken } = require('./middlewares/verifyToken.js');
 
 const app = express();
@@ -27,8 +30,13 @@ async function startServer() {
         connection.release(); // Release the connection back to the pool
 
         app.use('/auth', authRoute);
+
         app.use('/api', verifyToken);
+
+        
         app.use('/api/customers',customerRoute);
+        app.use('/api/policies', policiesRoute);
+
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
         });
