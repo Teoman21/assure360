@@ -1,5 +1,4 @@
-// controllers/authController.js
-const poolPromise = require('../config/db'); 
+const poolPromise = require('../config/db');
 const { createToken } = require("../utils/tokenCreate")
 const bcrypt = require("bcryptjs");
 
@@ -12,10 +11,14 @@ exports.signup = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        await pool.query('INSERT INTO Users (Email, Password, FirstName, LastName, Username) VALUES (?, ?, ?, ?, ?)',
+        const result = await pool.query('INSERT INTO Users (Email, Password, FirstName, LastName, Username) VALUES (?, ?, ?, ?, ?)',
                          [req.body.email, hashedPassword, req.body.fullName, req.body.fullName, req.body.username]); // Assuming splitting fullName if needed
+        const userId = result[0].insertId;
+        const token = createToken(userId); // Generate token after successful signup
 
-        res.status(201).json({ message: "User signed up successfully" });
+        console.log(token);
+
+        res.status(201).json({ message: "User signed up successfully", token: token });
     } catch (err) {
         console.error('Signup Error:', err);
         res.status(500).json({ message: "Internal Server Error", error: err.toString() });
@@ -35,7 +38,11 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        res.json({ message: "Login successful" }); // Assume token handling elsewhere
+        const token = createToken(user.UserId); // Generate token after successful login
+        
+        console.log(token);
+
+        res.json({ message: "Login successful", token: token });
     } catch (err) {
         console.error('Login Error:', err);
         res.status(500).json({ message: "Internal Server Error", error: err.toString() });
