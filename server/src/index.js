@@ -6,6 +6,7 @@ const poolPromise = require('./config/db.js');
 const authRoute = require("./routes/authRoute.js");
 const customerRoute = require("./routes/customerRouter.js");
 const policiesRoute = require('./routes/policiesRouter');
+const claimsRoute = require("./routes/claimsRoute.js");
 
 //IMPORT VERIFYTOKEN FOR AUTHORIZATION IN API
 const { verifyToken } = require('./middlewares/verifyToken.js');
@@ -36,6 +37,7 @@ async function startServer() {
         
         app.use('/api/customers',customerRoute);
         app.use('/api/policies', policiesRoute);
+        app.use('/api/claims', claimsRoute );
 
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
