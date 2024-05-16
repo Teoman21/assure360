@@ -1,10 +1,10 @@
 const db = require('../config/db');
 
-// Get all claims with policy and customer details
+// Get all claims with policy and company details
 exports.getAllClaims = async (req, res) => {
     try {
         const [claims] = await db.execute(`
-            SELECT cl.*, p.PolicyNumber, c.FirstName, c.LastName 
+            SELECT cl.*, p.PolicyNumber, c.FirstName, c.LastName, c.Company
             FROM Claims cl
             JOIN Policies p ON cl.PolicyId = p.PolicyId
             JOIN Customers c ON p.CustomerId = c.CustomerId
@@ -15,11 +15,11 @@ exports.getAllClaims = async (req, res) => {
     }
 };
 
-// Get a single claim by ID
+// Get a single claim by ID including company
 exports.getClaimById = async (req, res) => {
     try {
         const [claim] = await db.execute(`
-            SELECT cl.*, p.PolicyNumber, c.FirstName, c.LastName 
+            SELECT cl.*, p.PolicyNumber, c.FirstName, c.LastName, c.Company
             FROM Claims cl
             JOIN Policies p ON cl.PolicyId = p.PolicyId
             JOIN Customers c ON p.CustomerId = c.CustomerId

@@ -1,10 +1,10 @@
 const db = require('../config/db');
 
-// Get all appointments with customer details
+// Get all appointments with customer details including company
 exports.getAllAppointments = async (req, res) => {
     try {
         const [appointments] = await db.execute(`
-            SELECT a.*, c.FirstName, c.LastName
+            SELECT a.*, c.FirstName, c.LastName, c.Company
             FROM Appointments a
             JOIN Customers c ON a.CustomerId = c.CustomerId
         `);
@@ -14,11 +14,11 @@ exports.getAllAppointments = async (req, res) => {
     }
 };
 
-// Get a single appointment by ID
+// Get a single appointment by ID including company
 exports.getAppointmentById = async (req, res) => {
     try {
         const [appointment] = await db.execute(`
-            SELECT a.*, c.FirstName, c.LastName
+            SELECT a.*, c.FirstName, c.LastName, c.Company
             FROM Appointments a
             JOIN Customers c ON a.CustomerId = c.CustomerId
             WHERE a.AppointmentId = ?
@@ -35,7 +35,7 @@ exports.getAppointmentById = async (req, res) => {
 
 // Create a new appointment
 exports.createAppointment = async (req, res) => {
-    const { CustomerId, UserId, AppointmentDate, Purpose, Status } = req.body;
+    const { CustomerId, UserId, AppointmentDate, Purpose, Status, Company } = req.body;
     try {
         const [result] = await db.execute(`
             INSERT INTO Appointments (CustomerId, UserId, AppointmentDate, Purpose, Status)
@@ -59,7 +59,7 @@ exports.updateAppointment = async (req, res) => {
         res.status(200).json({ message: 'Appointment updated' });
     } catch (error) {
         res.status(500).json({ message: error.message });
-    }
+    }   
 };
 
 // Delete an appointment

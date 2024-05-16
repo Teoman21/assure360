@@ -1,11 +1,10 @@
-// PoliciesController.js
 const db = require('../config/db');
 
-// Get all policies with customer details
+// Get all policies with customer and company details
 exports.getAllPolicies = async (req, res) => {
     try {
         const [policies] = await db.execute(`
-            SELECT p.*, c.FirstName, c.LastName 
+            SELECT p.*, c.FirstName, c.LastName, c.Company
             FROM Policies p
             JOIN Customers c ON p.CustomerId = c.CustomerId
         `);
@@ -15,11 +14,11 @@ exports.getAllPolicies = async (req, res) => {
     }
 };
 
-// Get a single policy by ID with customer details
+// Get a single policy by ID including company
 exports.getPolicyById = async (req, res) => {
     try {
         const [policy] = await db.execute(`
-            SELECT p.*, c.FirstName, c.LastName 
+            SELECT p.*, c.FirstName, c.LastName, c.Company
             FROM Policies p
             JOIN Customers c ON p.CustomerId = c.CustomerId
             WHERE p.PolicyId = ?

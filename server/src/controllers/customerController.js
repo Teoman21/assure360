@@ -1,4 +1,3 @@
-
 const db = require('../config/db');
 
 // Get all customers
@@ -27,12 +26,12 @@ exports.getCustomerById = async (req, res) => {
 
 // Create a new customer
 exports.createCustomer = async (req, res) => {
-    const { FirstName, LastName, Email, ContactNumber, Address, Status, AssignedUserId } = req.body;
+    const { FirstName, LastName, Email, ContactNumber, Address, Status, Company } = req.body;
     try {
         const [result] = await db.execute(`
-            INSERT INTO Customers (FirstName, LastName, Email, ContactNumber, Address, Status, AssignedUserId)
+            INSERT INTO Customers (FirstName, LastName, Email, ContactNumber, Address, Status, Company)
             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [FirstName, LastName, Email, ContactNumber, Address, Status, AssignedUserId]);
+            [FirstName, LastName, Email, ContactNumber, Address, Status, Company]);
         res.status(201).json({ message: 'Customer created', CustomerId: result.insertId });
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -41,13 +40,13 @@ exports.createCustomer = async (req, res) => {
 
 // Update a customer
 exports.updateCustomer = async (req, res) => {
-    const { FirstName, LastName, Email, ContactNumber, Address, Status, AssignedUserId } = req.body;
+    const { FirstName, LastName, Email, ContactNumber, Address, Status, Company } = req.body;
     try {
         await db.execute(`
             UPDATE Customers
-            SET FirstName = ?, LastName = ?, Email = ?, ContactNumber = ?, Address = ?, Status = ?, AssignedUserId = ?
+            SET FirstName = ?, LastName = ?, Email = ?, ContactNumber = ?, Address = ?, Status = ?, Company = ?
             WHERE CustomerId = ?`,
-            [FirstName, LastName, Email, ContactNumber, Address, Status, AssignedUserId, req.params.id]);
+            [FirstName, LastName, Email, ContactNumber, Address, Status, Company, req.params.id]);
         res.status(200).json({ message: 'Customer updated' });
     } catch (error) {
         res.status(500).json({ message: error.message });
