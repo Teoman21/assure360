@@ -1,7 +1,6 @@
-// index.js
 const express = require('express');
 const bodyParser = require('body-parser');
-//IMPORT THE NECESSERY PATHS
+const cors = require('cors'); // Import CORS
 const poolPromise = require('./config/db.js'); 
 const authRoute = require("./routes/authRoute.js");
 const customerRoute = require("./routes/customerRouter.js");
@@ -9,13 +8,12 @@ const policiesRoute = require('./routes/policiesRouter');
 const claimsRoute = require("./routes/claimsRoute.js");
 const appointmentRoute = require("./routes/appointmentsRoute.js");
 const interactionRoute = require("./routes/interactionsRoute.js");
-
-//IMPORT VERIFYTOKEN FOR AUTHORIZATION IN API
 const { verifyToken } = require('./middlewares/verifyToken.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors()); // Use CORS
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -35,11 +33,9 @@ async function startServer() {
         app.use('/auth', authRoute);
 
         app.use('/api', verifyToken);
-
-        
-        app.use('/api/customers',customerRoute);
+        app.use('/api/customers', customerRoute);
         app.use('/api/policies', policiesRoute);
-        app.use('/api/claims', claimsRoute );
+        app.use('/api/claims', claimsRoute);
         app.use('/api/appointments', appointmentRoute);
         app.use('/api/interactions', interactionRoute);
 
