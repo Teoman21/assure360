@@ -18,7 +18,7 @@ exports.signup = async (req, res) => {
 
         console.log(token);
 
-        res.status(201).json({ message: "User signed up successfully", token: token });
+        res.status(201).json({ message: "User signed up successfully", token: token, UserId: userId });
     } catch (err) {
         console.error('Signup Error:', err);
         res.status(500).json({ message: "Internal Server Error", error: err.toString() });
@@ -42,7 +42,7 @@ exports.login = async (req, res) => {
         
         console.log(token);
 
-        res.json({ message: "Login successful", token: token });
+        res.json({ message: "Login successful", token: token, UserId: user.UserId });
     } catch (err) {
         console.error('Login Error:', err);
         res.status(500).json({ message: "Internal Server Error", error: err.toString() });

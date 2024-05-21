@@ -3,89 +3,104 @@ import axios from 'axios';
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({children}) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [userToken, setUserToken] = useState(null);
-    const [UserId, setUserId] = useState(null);
+export const AuthProvider = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [userToken, setUserToken] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [error, setError] = useState(null);
 
-    const loginContext = async (email, password) => {
-        setIsLoading(true);
-        try {
-            const response = await axios.post('http://localhost:3000/auth/login', { email, password });
-            console.log("LOGIN ATTEMPT: ",response.data.message);
-            if(response.data && response.data.token && response.data.UserId) {
-                const { token, UserId } = response.data;
-                setUserToken(token);
-                setUserId(UserId);
-                localStorage.setItem('userToken', JSON.stringify(token));
-                localStorage.setItem('UserId', JSON.stringify(UserId));
-            } else {
-                console.log('Login failed', response.data.message);
-                setUserToken(null);
-            }
-        } catch (error) {
-            console.log(`Login error: ${error}`);
-            setUserToken(null);
-        }
-        setIsLoading(false);
-    };
-
-    const signUpContext = async (email, password, fullName, username) => {
-        setIsLoading(true);
-        try {
-            const response = await axios.post('http://localhost:3000/auth/signup', {
-                email,
-                password,
-                username,
-                fullName
-            });
-            console.log("SIGNUP ATTEMPT: ", response.data.message);
-            if(response.data && response.data.token && response.data.UserId) {
-                const { token, UserId } = response.data;
-                setUserToken(token);
-                setUserId(UserId);
-                localStorage.setItem('userToken', JSON.stringify(token));
-                localStorage.setItem('UserId', JSON.stringify(UserId));
-            } else {
-                console.log('Signup failed', response.data.message);
-            }
-        } catch (error) {
-            console.log(`Signup error: ${error}`);
-        }
-        setIsLoading(false);
-    };
-
-    const logoutContext = () => {
-        setIsLoading(true);
+  const loginContext = async (email, password) => {
+    setIsLoading(true);
+    setError(null); // Reset error state
+    try {
+      const response = await axios.post('http://localhost:3000/auth/login', { email, password });
+      console.log("LOGIN ATTEMPT RESPONSE: ", response.data.message);
+      if (response.data && response.data.token && response.data.UserId) {
+        const { token, UserId } = response.data;
+        setUserToken(token);
+        setUserId(UserId);
+        localStorage.setItem('userToken', token); // Save token as a plain string
+        localStorage.setItem('UserId', UserId); // Save user ID as a plain string
+        console.log('Login successful, token and UserId set:', { token, UserId });
+      } else {
+        console.log('Login failed:', response.data.message);
+        setError(response.data.message);
         setUserToken(null);
-        localStorage.removeItem('userToken');
-        localStorage.removeItem('UserId');
-        setIsLoading(false);
-    };
+        setUserId(null);
+      }
+    } catch (error) {
+      console.log(`Login error: ${error}`);
+      setError('Login failed due to an error.');
+      setUserToken(null);
+      setUserId(null);
+    }
+    setIsLoading(false);
+  };
 
-    const isLoggedIn = async () => {
-        try {
-            setIsLoading(true);
-            let userToken = localStorage.getItem('userToken');
-            userToken = userToken != null ? JSON.parse(userToken) : null;
-            let savedUserId = localStorage.getItem('UserId');
-            savedUserId = savedUserId != null ? JSON.parse(savedUserId) : null;
-            setUserId(savedUserId);
-            setUserToken(userToken);
-            setIsLoading(false);
-        } catch (error) {
-            console.log(`isLoggedIn error: ${error}`);
-            setIsLoading(false); 
-        }
-    };
+  const signUpContext = async (email, password, fullName, username) => {
+    setIsLoading(true);
+    setError(null); // Reset error state
+    try {
+      const response = await axios.post('http://localhost:3000/auth/signup', {
+        email,
+        password,
+        fullName,
+        username
+      });
+      console.log("SIGNUP ATTEMPT RESPONSE: ", response.data.message);
+      if (response.data && response.data.token && response.data.UserId) {
+        const { token, UserId } = response.data;
+        setUserToken(token);
+        setUserId(UserId);
+        localStorage.setItem('userToken', token); // Save token as a plain string
+        localStorage.setItem('UserId', UserId); // Save user ID as a plain string
+        console.log('Signup successful, token and UserId set:', { token, UserId });
+      } else {
+        console.log('Signup failed:', response.data.message);
+        setError(response.data.message);
+      }
+    } catch (error) {
+      console.log(`Signup error: ${error}`);
+      setError('Signup failed due to an error.');
+    }
+    setIsLoading(false);
+  };
 
-    useEffect(() => {
-        isLoggedIn();
-    }, []);
+  const logoutContext = () => {
+    setIsLoading(true);
+    setUserToken(null);
+    setUserId(null);
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('UserId');
+    setIsLoading(false);
+  };
 
-    return (
-        <AuthContext.Provider value={{loginContext, logoutContext, signUpContext, isLoading, userToken, UserId}}>
-            {children}
-        </AuthContext.Provider>
-    );
+  const isLoggedIn = async () => {
+    try {
+      setIsLoading(true);
+      let userToken = localStorage.getItem('userToken');
+      let savedUserId = localStorage.getItem('UserId');
+      console.log('Retrieved from local storage:', { userToken, savedUserId });
+      if (userToken && savedUserId) {
+        setUserId(savedUserId);
+        setUserToken(userToken);
+        console.log('isLoggedIn check, token and UserId:', { userToken, savedUserId });
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.log(`isLoggedIn error: ${error}`);
+      setIsLoading(false); 
+    }
+  };
+
+  useEffect(() => {
+    console.log('Running isLoggedIn check...');
+    isLoggedIn();
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ loginContext, logoutContext, signUpContext, isLoading, userToken, userId, error }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

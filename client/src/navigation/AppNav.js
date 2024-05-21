@@ -10,13 +10,16 @@ const AppNav = () => {
   return (
     <Routes>
       {userToken ? (
-        // Render the main app stack if the user is authenticated
-        <Route path="/*" element={<AppStack />} />
+        <>
+          <Route path="/dashboard/*" element={<AppStack />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </>
       ) : (
-        // Render the authentication stack if the user is not authenticated
         <>
           <Route path="/auth/*" element={<AuthStack />} />
-          <Route path="/*" element={<Navigate to="/auth/login" />} />
+          <Route path="/" element={<Navigate to="/auth/login" replace />} />
+          <Route path="*" element={<Navigate to="/auth/login" replace />} />
         </>
       )}
     </Routes>

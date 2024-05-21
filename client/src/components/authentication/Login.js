@@ -1,49 +1,57 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import './Auth.css'; // Import the CSS file for styling
+import './Auth.css';
 
 const Login = () => {
-  const { loginContext } = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { loginContext, error } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      await loginContext(email, password);
-      navigate('/'); // Redirect to home page after successful login
-    } catch (error) {
-      console.error('Login failed:', error);
+    console.log('Attempting to log in with:', { email, password });
+    await loginContext(email, password);
+    if (localStorage.getItem('userToken')) {
+      console.log('User token found:', localStorage.getItem('userToken'));
+      navigate('/dashboard');
+    } else {
+      console.log('No user token found after login');
+      setMessage('Login failed. Please try again.');
     }
   };
 
   return (
     <div className="auth-container">
-      <h1>Assure360 Login</h1>
-      <form onSubmit={handleSubmit} className="auth-form">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-          className="auth-input"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-          className="auth-input"
-        />
-        <button type="submit" className="auth-button">Login</button>
-      </form>
-      <p className="auth-switch">
-        Don't have an account? <Link to="/auth/signup">Sign Up</Link>
-      </p>
+      <div className="auth-box">
+        <h2>Login to Assure360</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+        {message && (
+          <p className={error ? "error-text" : "success-text"}>{message}</p>
+        )}
+        <p>
+          Don't have an account? <span onClick={() => navigate('/auth/signup')}>Sign Up</span>
+        </p>
+      </div>
     </div>
   );
 };
