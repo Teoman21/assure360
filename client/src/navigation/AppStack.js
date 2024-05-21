@@ -7,6 +7,7 @@ import Appointments from '../components/views/appointments/Appointments';
 import Policies from '../components/views/policies/Policies';
 import Interactions from '../components/views/interactions/Interactions';
 import Claims from '../components/views/claims/Claims';
+import Settings from '../components/views/settings/Settings';
 
 const AppStack = () => {
   console.log("Rendering AppStack");
@@ -19,6 +20,7 @@ const AppStack = () => {
         <Route path="appointments" element={<Appointments />} />
         <Route path="interactions" element={<Interactions />} />
         <Route path="claims" element={<Claims />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>
   );

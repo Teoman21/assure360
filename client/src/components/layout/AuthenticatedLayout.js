@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from './SideBar';
 import { Outlet } from 'react-router-dom';
-import './AuthenticatedLayout.css'; // Import your CSS for layout if needed
+import './AuthenticatedLayout.css';
 
 const AuthenticatedLayout = () => {
   return (

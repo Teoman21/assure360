@@ -1,17 +1,13 @@
 
 
 .authenticated-layout {
-    display: flex;
-  }
-  
-  .main-content {
-    flex-grow: 1;
-    padding: 20px;
-    margin-left: 250px; /* Adjust based on sidebar width */
-    transition: margin-left 0.3s ease;
-  }
-  
-  .sidebar.open + .main-content {
-    margin-left: 250px; /* Adjust based on sidebar width */
-  }
-  
+  display: flex;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 50px; /* Adjusted padding for spacing */
+  margin-left: 150px; /* Adjusted for the sidebar width */
+  transition: margin-left 0.3s ease;
+  position: relative; /* Ensure it's properly positioned within the document flow */
+}
