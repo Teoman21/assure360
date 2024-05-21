@@ -1,19 +1,36 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Sidebar.css';
 
 const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const navigateTo = (path) => {
+    navigate(path);
+    setIsOpen(false); // Close the sidebar after navigation
+  };
+
   return (
-    <div style={{ width: '250px', height: '100vh', background: '#333', color: '#fff', padding: '20px' }}>
-      <h3>Navigation</h3>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        <li><Link to="/dashboard" style={{ color: '#fff', textDecoration: 'none' }}>Dashboard</Link></li>
-        <li><Link to="/appointments" style={{ color: '#fff', textDecoration: 'none' }}>Appointments</Link></li>
-        <li><Link to="/policies" style={{ color: '#fff', textDecoration: 'none' }}>Policies</Link></li>
-        <li><Link to="/interactions" style={{ color: '#fff', textDecoration: 'none' }}>Interactions</Link></li>
-        <li><Link to="/claims" style={{ color: '#fff', textDecoration: 'none' }}>Claims</Link></li>
-        <li><Link to="/customers" style={{ color: '#fff', textDecoration: 'none' }}>Customers</Link></li>
-      </ul>
-    </div>
+    <>
+      <div className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleSidebar}>
+        <div className="bar"></div>
+        <div className="bar"></div>
+        <div className="bar"></div>
+      </div>
+      <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <button onClick={() => navigateTo('/dashboard')}>Dashboard</button>
+        <button onClick={() => navigateTo('/dashboard/customers')}>Customers</button>
+        <button onClick={() => navigateTo('/dashboard/policies')}>Policies</button>
+        <button onClick={() => navigateTo('/dashboard/appointments')}>Appointments</button>
+        <button onClick={() => navigateTo('/dashboard/interactions')}>Interactions</button>
+        <button onClick={() => navigateTo('/dashboard/claims')}>Claims</button>
+      </div>
+    </>
   );
 };
 

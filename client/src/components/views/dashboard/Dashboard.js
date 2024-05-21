@@ -1,8 +1,20 @@
-// src/components/views/dashboard/Dashboard.js
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  return <div>anan baba hsbahsb ausbusa uasbusabb aushuashsuasb ushbaubsuahbusah</div>;
+  const navigate = useNavigate();
+
+  const goToCustomers = () => {
+    navigate('/dashboard/customers');
+  };
+
+  console.log('Rendering Dashboard component');
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <button onClick={goToCustomers}>Go to Customers</button>
+    </div>
+  );
 };
 
 export default Dashboard;
