@@ -12,6 +12,7 @@ const Dashboard = () => {
   return (
     <div>
       <h1>Dashboard</h1>
+      <image></image>
       <button onClick={goToCustomers}>Go to Customers</button>
     </div>
   );
