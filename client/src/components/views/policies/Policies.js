@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import moment from 'moment-timezone';
 import './Policies.css';
 
 const Policies = () => {
@@ -15,31 +16,36 @@ const Policies = () => {
   const [policyToDelete, setPolicyToDelete] = useState(null);
 
   useEffect(() => {
-    fetchPolicies();
-    fetchCompanies();
+    fetchPoliciesAndCompanies();
   }, []);
 
-  const fetchPolicies = async () => {
+  const fetchPoliciesAndCompanies = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      const response = await axios.get('http://localhost:3000/api/policies', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setPolicies(response.data);
-    } catch (error) {
-      console.error("There was an error fetching the policies!", error);
-    }
-  };
+      const [policiesResponse, companiesResponse] = await Promise.all([
+        axios.get('http://localhost:3000/api/policies', {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get('http://localhost:3000/api/customers', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
 
-  const fetchCompanies = async () => {
-    try {
-      const token = localStorage.getItem('userToken');
-      const response = await axios.get('http://localhost:3000/api/customers', {
-        headers: { Authorization: `Bearer ${token}` }
+      const companiesData = companiesResponse.data;
+      setCompanies(companiesData);
+
+      const policiesWithCompany = policiesResponse.data.map(policy => {
+        const company = companiesData.find(c => c.CustomerId === policy.CustomerId);
+        return {
+          ...policy,
+          Company: company ? company.Company : 'Unknown',
+          StartDate: moment.tz(policy.StartDate, 'UTC').tz('Europe/Istanbul').format('DD-MM-YYYY HH:mm'),
+          EndDate: moment.tz(policy.EndDate, 'UTC').tz('Europe/Istanbul').format('DD-MM-YYYY HH:mm')
+        };
       });
-      setCompanies(response.data);
+      setPolicies(policiesWithCompany);
     } catch (error) {
-      console.error("There was an error fetching the companies!", error);
+      console.error("There was an error fetching the policies and companies!", error);
     }
   };
 
@@ -48,12 +54,21 @@ const Policies = () => {
   };
 
   const handleCreate = async () => {
+    const policyData = {
+      CustomerId: form.CustomerId,
+      Type: form.Type,
+      PolicyNumber: form.PolicyNumber,
+      StartDate: form.StartDate,
+      EndDate:form.EndDate,
+      PremiumAmount: form.PremiumAmount
+    };
+
     try {
       const token = localStorage.getItem('userToken');
-      await axios.post('http://localhost:3000/api/policies', form, {
+      await axios.post('http://localhost:3000/api/policies', policyData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchPolicies();
+      fetchPoliciesAndCompanies();
       closePanel();
     } catch (error) {
       if (error.response && error.response.status === 409) {
@@ -65,12 +80,20 @@ const Policies = () => {
   };
 
   const handleUpdate = async () => {
+    const policyData = {
+      Type: form.Type,
+      PolicyNumber: form.PolicyNumber,
+      StartDate: form.StartDate,
+      EndDate: form.StartDate,
+      PremiumAmount: form.PremiumAmount
+    };
+
     try {
       const token = localStorage.getItem('userToken');
-      await axios.put(`http://localhost:3000/api/policies/${selectedPolicy.PolicyId}`, form, {
+      await axios.put(`http://localhost:3000/api/policies/${selectedPolicy.PolicyId}`, policyData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchPolicies();
+      fetchPoliciesAndCompanies();
       closePanel();
     } catch (error) {
       setErrorMessage('There was an error updating the policy.');
@@ -83,7 +106,7 @@ const Policies = () => {
       await axios.delete(`http://localhost:3000/api/policies/${policyToDelete.PolicyId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchPolicies();
+      fetchPoliciesAndCompanies();
       setIsDeleteConfirmOpen(false);
     } catch (error) {
       console.error("There was an error deleting the policy!", error);
@@ -99,8 +122,8 @@ const Policies = () => {
         CustomerId: policy.CustomerId,
         Type: policy.Type,
         PolicyNumber: policy.PolicyNumber,
-        StartDate: policy.StartDate,
-        EndDate: policy.EndDate,
+        StartDate: moment.tz(policy.StartDate, 'UTC').tz('Europe/Istanbul').format('YYYY-MM-DDTHH:mm'),
+        EndDate: moment.tz(policy.EndDate, 'UTC').tz('Europe/Istanbul').format('YYYY-MM-DDTHH:mm'),
         PremiumAmount: policy.PremiumAmount,
       });
     } else {
@@ -125,7 +148,7 @@ const Policies = () => {
     setIsDeleteConfirmOpen(false);
   };
 
-  const filteredPolicies = policies.filter(policy => 
+  const filteredPolicies = policies.filter(policy =>
     companies.find(company => company.CustomerId === policy.CustomerId)?.Company.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -189,8 +212,8 @@ const Policies = () => {
               </select>
               <input type="text" name="Type" placeholder="Type" value={form.Type} onChange={handleChange} />
               <input type="text" name="PolicyNumber" placeholder="Policy Number" value={form.PolicyNumber} onChange={handleChange} />
-              <input type="date" name="StartDate" placeholder="Start Date" value={form.StartDate} onChange={handleChange} />
-              <input type="date" name="EndDate" placeholder="End Date" value={form.EndDate} onChange={handleChange} />
+              <input type="datetime-local" name="StartDate" placeholder="Start Date" value={form.StartDate} onChange={handleChange} />
+              <input type="datetime-local" name="EndDate" placeholder="End Date" value={form.EndDate} onChange={handleChange} />
               <input type="number" name="PremiumAmount" placeholder="Premium Amount" value={form.PremiumAmount} onChange={handleChange} />
             </form>
             <button className="save-button" onClick={isUpdateMode ? handleUpdate : handleCreate}>

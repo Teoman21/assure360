@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import moment from 'moment-timezone';
 import './Claims.css';
 
 const Claims = () => {
@@ -15,31 +16,30 @@ const Claims = () => {
   const [claimToDelete, setClaimToDelete] = useState(null);
 
   useEffect(() => {
-    fetchClaims();
-    fetchPolicies();
+    fetchClaimsAndPolicies();
   }, []);
 
-  const fetchClaims = async () => {
+  const fetchClaimsAndPolicies = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      const response = await axios.get('http://localhost:3000/api/claims', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setClaims(response.data);
-    } catch (error) {
-      console.error("There was an error fetching the claims!", error);
-    }
-  };
+      const [claimsResponse, policiesResponse] = await Promise.all([
+        axios.get('http://localhost:3000/api/claims', {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get('http://localhost:3000/api/policies', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
 
-  const fetchPolicies = async () => {
-    try {
-      const token = localStorage.getItem('userToken');
-      const response = await axios.get('http://localhost:3000/api/policies', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setPolicies(response.data);
+      setClaims(claimsResponse.data.map(claim => ({
+        ...claim,
+        DateFiled: moment.tz(claim.DateFiled, 'UTC').tz('Europe/Istanbul').format('DD-MM-YYYY HH:mm'),
+        ResolutionDate: claim.ResolutionDate ? moment.tz(claim.ResolutionDate, 'UTC').tz('Europe/Istanbul').format('DD-MM-YYYY HH:mm') : ''
+      })));
+
+      setPolicies(policiesResponse.data);
     } catch (error) {
-      console.error("There was an error fetching the policies!", error);
+      console.error("There was an error fetching the claims and policies!", error);
     }
   };
 
@@ -53,7 +53,7 @@ const Claims = () => {
       await axios.post('http://localhost:3000/api/claims', form, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchClaims();
+      fetchClaimsAndPolicies();
       closePanel();
     } catch (error) {
       setErrorMessage('There was an error creating the claim.');
@@ -66,7 +66,7 @@ const Claims = () => {
       await axios.put(`http://localhost:3000/api/claims/${selectedClaim.ClaimId}`, form, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchClaims();
+      fetchClaimsAndPolicies();
       closePanel();
     } catch (error) {
       setErrorMessage('There was an error updating the claim.');
@@ -79,7 +79,7 @@ const Claims = () => {
       await axios.delete(`http://localhost:3000/api/claims/${claimToDelete.ClaimId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchClaims();
+      fetchClaimsAndPolicies();
       setIsDeleteConfirmOpen(false);
     } catch (error) {
       console.error("There was an error deleting the claim!", error);
@@ -93,10 +93,10 @@ const Claims = () => {
       setSelectedClaim(claim);
       setForm({
         PolicyId: claim.PolicyId,
-        DateFiled: claim.DateFiled,
+        DateFiled: moment.tz(claim.DateFiled, 'UTC').tz('Europe/Istanbul').format('YYYY-MM-DDTHH:mm'),
         ClaimAmount: claim.ClaimAmount,
         Status: claim.Status,
-        ResolutionDate: claim.ResolutionDate,
+        ResolutionDate: claim.ResolutionDate ? moment.tz(claim.ResolutionDate, 'UTC').tz('Europe/Istanbul').format('YYYY-MM-DDTHH:mm') : ''
       });
     } else {
       setIsUpdateMode(false);
@@ -182,10 +182,10 @@ const Claims = () => {
                   <option key={policy.PolicyId} value={policy.PolicyId}>{policy.PolicyNumber} ({policy.Company})</option>
                 ))}
               </select>
-              <input type="date" name="DateFiled" placeholder="Date Filed" value={form.DateFiled} onChange={handleChange} />
+              <input type="datetime-local" name="DateFiled" placeholder="Date Filed" value={form.DateFiled} onChange={handleChange} />
               <input type="number" name="ClaimAmount" placeholder="Claim Amount" value={form.ClaimAmount} onChange={handleChange} />
               <input type="text" name="Status" placeholder="Status" value={form.Status} onChange={handleChange} />
-              <input type="date" name="ResolutionDate" placeholder="Resolution Date" value={form.ResolutionDate} onChange={handleChange} />
+              <input type="datetime-local" name="ResolutionDate" placeholder="Resolution Date" value={form.ResolutionDate} onChange={handleChange} />
             </form>
             <button className="save-button" onClick={isUpdateMode ? handleUpdate : handleCreate}>
               {isUpdateMode ? 'Update Claim' : 'Create Claim'}
@@ -195,11 +195,11 @@ const Claims = () => {
       )}
 
       {isDeleteConfirmOpen && (
-        <div className="delete-confirm">
-          <div className="delete-confirm-content">
+        <div className="delete-confirm-overlay">
+          <div className="delete-confirm-box">
             <p>Are you sure you want to delete this claim?</p>
-            <button className="yes-button" onClick={handleDelete}>Yes</button>
-            <button className="no-button" onClick={closeDeleteConfirm}>No</button>
+            <button className="confirm-button" onClick={handleDelete}>Yes</button>
+            <button className="cancel-button" onClick={closeDeleteConfirm}>No</button>
           </div>
         </div>
       )}

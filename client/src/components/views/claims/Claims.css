@@ -1,4 +1,3 @@
-
 .claims-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -163,7 +162,7 @@ h1 {
   margin-bottom: 10px;
 }
 
-.delete-modal {
+.delete-confirm {
   position: fixed;
   top: 0;
   left: 0;
@@ -176,7 +175,7 @@ h1 {
   z-index: 1000;
 }
 
-.delete-modal-content {
+.delete-confirm-content {
   background-color: white;
   padding: 20px;
   border-radius: 10px;
@@ -186,7 +185,7 @@ h1 {
   text-align: center;
 }
 
-.delete-modal-content p {
+.delete-confirm-content p {
   margin-bottom: 20px;
 }
 

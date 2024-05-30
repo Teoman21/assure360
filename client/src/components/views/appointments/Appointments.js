@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import moment from 'moment-timezone';
 import './Appointments.css';
 
 const Appointments = () => {
@@ -35,7 +36,9 @@ const Appointments = () => {
 
             const appointmentsWithCompany = appointmentResponse.data.map(appointment => {
                 const customer = customersData.find(c => c.CustomerId === appointment.CustomerId);
-                return { ...appointment, Company: customer ? customer.Company : 'Unknown' };
+                return { ...appointment, Company: customer ? customer.Company : 'Unknown', 
+                    AppointmentDate: moment.tz(appointment.appointmentData, 'UTC').tz('Europe/Istanbul').format('DD-MM-YYYY HH:mm')
+                };
             });
             setAppointments(appointmentsWithCompany);
         } catch (error) {
@@ -110,7 +113,7 @@ const Appointments = () => {
             setSelectedAppointment(appointment);
             setForm({
                 CustomerId: appointment.CustomerId,
-                AppointmentDate: appointment.AppointmentDate,
+                AppointmentDate: moment.tz(appointment.AppointmentDate, 'UTC').tz('Europe/Istanbul').format('YYYY-MM-DDTHH:mm'),
                 Purpose: appointment.Purpose,
                 Status: appointment.Status,
             });
