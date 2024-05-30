@@ -36,8 +36,10 @@ const Appointments = () => {
 
             const appointmentsWithCompany = appointmentResponse.data.map(appointment => {
                 const customer = customersData.find(c => c.CustomerId === appointment.CustomerId);
-                return { ...appointment, Company: customer ? customer.Company : 'Unknown', 
-                    AppointmentDate: moment.tz(appointment.appointmentData, 'UTC').tz('Europe/Istanbul').format('DD-MM-YYYY HH:mm')
+                return { 
+                    ...appointment, 
+                    Company: customer ? customer.Company : 'Unknown', 
+                    AppointmentDate: moment.tz(appointment.AppointmentDate, 'UTC').tz('Europe/Istanbul').format('DD-MM-YYYY HH:mm')
                 };
             });
             setAppointments(appointmentsWithCompany);

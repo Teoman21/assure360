@@ -1,52 +1,54 @@
 .dashboard-container {
-  display: flex;
-  height: 100vh;
-  background-color: #f5f7fa;
-}
-
-.sidebar {
-  width: 250px;
-  background-color: #34495e;
-  color: white;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  width: 100%;
-}
-
-.sidebar li {
-  width: 100%;
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar li:hover {
-  background-color: #2c3e50;
-}
-
-.sidebar li svg {
-  margin-right: 10px;
-}
-
-.content {
-  flex-grow: 1;
-  padding: 40px;
-  background-color: white;
-  border-radius: 15px;
-  margin: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.content h1 {
+h1 {
+  text-align: center;
   margin-bottom: 20px;
-  color: #2c3e50;
+}
+
+.summary-cards {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  flex: 1;
+  margin: 10px;
+  text-align: center;
+}
+
+.income-card {
+  background-color: #e0f7fa;
+}
+
+.orders-card {
+  background-color: #fce4ec;
+}
+
+.clients-card {
+  background-color: #f3e5f5;
+}
+
+.events-card {
+  background-color: #ffebee;
+}
+
+.charts {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chart-container {
+  flex: 1;
+  margin: 10px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
