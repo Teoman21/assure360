@@ -8,6 +8,7 @@ const policiesRoute = require('./routes/policiesRouter');
 const claimsRoute = require("./routes/claimsRoute.js");
 const appointmentRoute = require("./routes/appointmentsRoute.js");
 const interactionRoute = require("./routes/interactionsRoute.js");
+const userRoute = require("./routes/userRoute.js");
 const { verifyToken } = require('./middlewares/verifyToken.js');
 
 const app = express();
@@ -38,6 +39,7 @@ async function startServer() {
         app.use('/api/claims', claimsRoute);
         app.use('/api/appointments', appointmentRoute);
         app.use('/api/interactions', interactionRoute);
+        app.use('api/users', userRoute);
 
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);

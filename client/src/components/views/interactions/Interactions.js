@@ -55,7 +55,6 @@ const Interactions = () => {
     const handleCreate = async () => {
         const interactionData = {
             CustomerId: form.CustomerId,
-            UserId:null,
             InteractionDate: form.InteractionDate,
             Type: form.Type,
             Content: form.Content

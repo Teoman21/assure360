@@ -55,7 +55,6 @@ const Appointments = () => {
     const handleCreate = async () => {
         const appointmentData = {
             CustomerId: form.CustomerId,
-            UserId: null, // Assuming no UserId is needed or you can set it if available
             AppointmentDate: form.AppointmentDate,
             Purpose: form.Purpose,
             Status: form.Status

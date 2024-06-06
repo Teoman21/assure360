@@ -35,12 +35,12 @@ exports.getInteractionById = async (req, res) => {
 
 // Create a new interaction
 exports.createInteraction = async (req, res) => {
-    const { CustomerId, UserId, Type, Content, InteractionDate } = req.body;
+    const { CustomerId, Type, Content, InteractionDate } = req.body;
     try {
         const [result] = await db.execute(`
-            INSERT INTO Interactions (CustomerId, UserId, Type, Content, InteractionDate)
+            INSERT INTO Interactions (CustomerId, Type, Content, InteractionDate)
             VALUES (?, ?, ?, ?, ?)`,
-            [CustomerId, UserId, Type, Content, InteractionDate]);
+            [CustomerId, Type, Content, InteractionDate]);
         res.status(201).json({ message: 'Interaction created', InteractionId: result.insertId });
     } catch (error) {
         res.status(400).json({ message: error.message });

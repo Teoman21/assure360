@@ -35,12 +35,12 @@ exports.getAppointmentById = async (req, res) => {
 
 // Create a new appointment
 exports.createAppointment = async (req, res) => {
-    const { CustomerId, UserId, AppointmentDate, Purpose, Status, Company } = req.body;
+    const { CustomerId, AppointmentDate, Purpose, Status, Company } = req.body;
     try {
         const [result] = await db.execute(`
-            INSERT INTO Appointments (CustomerId, UserId, AppointmentDate, Purpose, Status)
-            VALUES (?, ?, ?, ?, ?)`,
-            [CustomerId, UserId, AppointmentDate, Purpose, Status]);
+            INSERT INTO Appointments (CustomerId, AppointmentDate, Purpose, Status)
+            VALUES (?, ?, ?, ?)`,
+            [CustomerId, AppointmentDate, Purpose, Status]);
         res.status(201).json({ message: 'Appointment created', AppointmentId: result.insertId });
     } catch (error) {
         res.status(400).json({ message: error.message });

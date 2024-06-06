@@ -1,17 +1,11 @@
-// userController.js
-const pool = require('../config/db.js'); 
+const db = require('../config/db');
 
-const getUsers = (req, res) => {
-    pool.query('SELECT * FROM Users', (err, results) => {
-        if (err) {
-            console.error("Error fetching users: ", err.message);
-            res.status(500).send('Error fetching users');
-            return;
-        }
-        res.json(results);
-    });
+exports.getUsers = async (req, res) => {
+    try {
+        const [users] = await db.execute(`SELECT * FROM Users`);
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
-module.exports = {
-    getUsers
-};
