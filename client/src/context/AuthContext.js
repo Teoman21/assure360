@@ -37,14 +37,15 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const signUpContext = async (email, password, fullName, username) => {
+  const signUpContext = async (email, password, FirstName, LastName, username) => {
     setIsLoading(true);
     setError(null); // Reset error state
     try {
       const response = await axios.post('http://localhost:3000/auth/signup', {
         email,
         password,
-        fullName,
+        FirstName,
+        LastName,
         username
       });
       console.log("SIGNUP ATTEMPT RESPONSE: ", response.data.message);

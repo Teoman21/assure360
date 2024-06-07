@@ -35,12 +35,12 @@ exports.getInteractionById = async (req, res) => {
 
 // Create a new interaction
 exports.createInteraction = async (req, res) => {
-    const { CustomerId, Type, Content, InteractionDate } = req.body;
+    const { CustomerId, UserId, Type, Content, InteractionDate } = req.body;
     try {
         const [result] = await db.execute(`
-            INSERT INTO Interactions (CustomerId, Type, Content, InteractionDate)
+            INSERT INTO Interactions (CustomerId, UserId, Type, Content, InteractionDate)
             VALUES (?, ?, ?, ?, ?)`,
-            [CustomerId, Type, Content, InteractionDate]);
+            [CustomerId, UserId, Type, Content, InteractionDate]);
         res.status(201).json({ message: 'Interaction created', InteractionId: result.insertId });
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -49,13 +49,13 @@ exports.createInteraction = async (req, res) => {
 
 // Update an interaction
 exports.updateInteraction = async (req, res) => {
-    const { Type, Content, InteractionDate } = req.body;
+    const { Type, Content, InteractionDate, UserId } = req.body;
     try {
         await db.execute(`
             UPDATE Interactions
-            SET Type = ?, Content = ?, InteractionDate = ?
+            SET Type = ?, Content = ?, InteractionDate = ?, UserId = ?
             WHERE InteractionId = ?`,
-            [Type, Content, InteractionDate, req.params.id]);
+            [Type, Content, InteractionDate, UserId, req.params.id]);
         res.status(200).json({ message: 'Interaction updated' });
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -35,27 +35,26 @@ exports.getAppointmentById = async (req, res) => {
 
 // Create a new appointment
 exports.createAppointment = async (req, res) => {
-    const { CustomerId, AppointmentDate, Purpose, Status, Company } = req.body;
+    const { CustomerId, UserId, AppointmentDate, Purpose, Status, Company } = req.body;
     try {
         const [result] = await db.execute(`
-            INSERT INTO Appointments (CustomerId, AppointmentDate, Purpose, Status)
-            VALUES (?, ?, ?, ?)`,
-            [CustomerId, AppointmentDate, Purpose, Status]);
+            INSERT INTO Appointments (CustomerId, UserId, AppointmentDate, Purpose, Status)
+            VALUES (?, ?, ?, ?, ?)`,
+            [CustomerId, UserId, AppointmentDate, Purpose, Status]);
         res.status(201).json({ message: 'Appointment created', AppointmentId: result.insertId });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
-
 // Update an appointment
 exports.updateAppointment = async (req, res) => {
-    const { AppointmentDate, Purpose, Status } = req.body;
+    const { AppointmentDate, Purpose, Status, UserId } = req.body;
     try {
         await db.execute(`
             UPDATE Appointments
-            SET AppointmentDate = ?, Purpose = ?, Status = ?
+            SET AppointmentDate = ?, Purpose = ?, Status = ?, UserId = ?
             WHERE AppointmentId = ?`,
-            [AppointmentDate, Purpose, Status, req.params.id]);
+            [AppointmentDate, Purpose, Status, UserId, req.params.id]);
         res.status(200).json({ message: 'Appointment updated' });
     } catch (error) {
         res.status(500).json({ message: error.message });

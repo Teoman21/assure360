@@ -39,7 +39,7 @@ async function startServer() {
         app.use('/api/claims', claimsRoute);
         app.use('/api/appointments', appointmentRoute);
         app.use('/api/interactions', interactionRoute);
-        app.use('api/users', userRoute);
+        app.use('/api/users', userRoute);
 
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);

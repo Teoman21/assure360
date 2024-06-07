@@ -12,7 +12,7 @@ exports.signup = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const result = await pool.query('INSERT INTO Users (Email, Password, FirstName, LastName, Username) VALUES (?, ?, ?, ?, ?)',
-                         [req.body.email, hashedPassword, req.body.fullName, req.body.fullName, req.body.username]); // Assuming splitting fullName if needed
+                         [req.body.email, hashedPassword, req.body.FirstName, req.body.LastName, req.body.username]); 
         const userId = result[0].insertId;
         const token = createToken(userId); // Generate token after successful signup
 

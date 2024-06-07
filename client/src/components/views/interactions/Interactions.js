@@ -6,7 +6,8 @@ import '../appointments/Appointments.css'; // Assuming you want to use the same 
 const Interactions = () => {
     const [interactions, setInteractions] = useState([]);
     const [customers, setCustomers] = useState([]);
-    const [form, setForm] = useState({ CustomerId: '', InteractionDate: '', Type: '', Content: '' });
+    const [users, setUsers] = useState([]);
+    const [form, setForm] = useState({ CustomerId: '', InteractionDate: '', Type: '', Content: '', UserId: '' });
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [selectedInteraction, setSelectedInteraction] = useState(null);
@@ -17,6 +18,7 @@ const Interactions = () => {
 
     useEffect(() => {
         fetchCustomersAndInteractions();
+        fetchUsers();
     }, []);
 
     const fetchCustomersAndInteractions = async () => {
@@ -48,6 +50,18 @@ const Interactions = () => {
         }
     };
 
+    const fetchUsers = async () => {
+        try {
+            const token = localStorage.getItem('userToken');
+            const response = await axios.get('http://localhost:3000/api/users', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUsers(response.data);
+        } catch (error) {
+            console.error("There was an error fetching the users!", error);
+        }
+    };
+
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -57,10 +71,9 @@ const Interactions = () => {
             CustomerId: form.CustomerId,
             InteractionDate: form.InteractionDate,
             Type: form.Type,
-            Content: form.Content
+            Content: form.Content,
+            UserId: form.UserId
         };
-
-        console.log('Creating interaction with data:', interactionData);
 
         try {
             const token = localStorage.getItem('userToken');
@@ -79,10 +92,9 @@ const Interactions = () => {
         const interactionData = {
             InteractionDate: form.InteractionDate,
             Type: form.Type,
-            Content: form.Content
+            Content: form.Content,
+            UserId: form.UserId
         };
-
-        console.log('Updating interaction with data:', interactionData);
 
         try {
             const token = localStorage.getItem('userToken');
@@ -121,10 +133,11 @@ const Interactions = () => {
                 InteractionDate: moment.tz(interaction.InteractionDate, 'UTC').tz('Europe/Istanbul').format('YYYY-MM-DDTHH:mm'),
                 Type: interaction.Type,
                 Content: interaction.Content,
+                UserId: interaction.UserId
             });
         } else {
             setIsUpdateMode(false);
-            setForm({ CustomerId: '', InteractionDate: '', Type: '', Content: '' });
+            setForm({ CustomerId: '', InteractionDate: '', Type: '', Content: '', UserId: '' });
         }
         setIsPanelOpen(true);
     };
@@ -157,6 +170,7 @@ const Interactions = () => {
                         <th>Type</th>
                         <th>Interaction Date</th>
                         <th>Content</th>
+                        <th>User</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -167,6 +181,7 @@ const Interactions = () => {
                             <td>{interaction.Type}</td>
                             <td>{interaction.InteractionDate}</td>
                             <td>{interaction.Content}</td>
+                            <td>{users.find(user => user.UserId === interaction.UserId)?.FirstName + ' ' + users.find(user => user.UserId === interaction.UserId)?.LastName || 'Unknown'}</td>
                             <td>
                                 <button className="edit-button" onClick={() => openPanel(interaction)}>Edit</button>
                                 <button className="delete-button" onClick={() => { setShowDeleteModal(true); setInteractionToDelete(interaction); }}>Delete</button>
@@ -194,6 +209,14 @@ const Interactions = () => {
                             <input type="datetime-local" name="InteractionDate" value={form.InteractionDate} onChange={handleChange} />
                             <input type="text" name="Type" placeholder="Type" value={form.Type} onChange={handleChange} />
                             <input type="text" name="Content" placeholder="Content" value={form.Content} onChange={handleChange} />
+                            <select name="UserId" value={form.UserId} onChange={handleChange}>
+                                <option value="">Select User</option>
+                                {users.map(user => (
+                                    <option key={user.UserId} value={user.UserId}>
+                                        {user.FirstName} {user.LastName}
+                                    </option>
+                                ))}
+                            </select>
                         </form>
                         <button className="save-button" onClick={isUpdateMode ? handleUpdate : handleCreate}>
                             {isUpdateMode ? 'Update Interaction' : 'Create Interaction'}

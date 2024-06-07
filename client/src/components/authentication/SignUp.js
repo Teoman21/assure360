@@ -10,17 +10,18 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    if (!email || !password || !username || !fullName) {
+    if (!email || !password || !username || !firstName || !lastName) {
       setMessage('Please fill out all fields.');
       return;
     }
 
-    await signUpContext(email, password, fullName, username);
+    await signUpContext(email, password, username, firstName, lastName);
   };
 
   useEffect(() => {
@@ -66,9 +67,16 @@ const SignUp = () => {
           />
           <input
             type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             required
           />
           <button type="submit">Sign Up</button>

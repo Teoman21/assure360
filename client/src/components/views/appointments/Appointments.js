@@ -6,7 +6,8 @@ import './Appointments.css';
 const Appointments = () => {
     const [appointments, setAppointments] = useState([]);
     const [customers, setCustomers] = useState([]);
-    const [form, setForm] = useState({ CustomerId: '', AppointmentDate: '', Purpose: '', Status: '' });
+    const [users, setUsers] = useState([]);
+    const [form, setForm] = useState({ CustomerId: '', AppointmentDate: '', Purpose: '', Status: '', UserId: '' });
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -17,6 +18,7 @@ const Appointments = () => {
 
     useEffect(() => {
         fetchCustomersAndAppointments();
+        fetchUsers();
     }, []);
 
     const fetchCustomersAndAppointments = async () => {
@@ -48,6 +50,19 @@ const Appointments = () => {
         }
     };
 
+    const fetchUsers = async () => {
+        try {
+            const token = localStorage.getItem('userToken');
+            const response = await axios.get('http://localhost:3000/api/users', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            console.log("Users fetched:", response.data); // Log the users
+            setUsers(response.data);
+        } catch (error) {
+            console.error("There was an error fetching the users!", error);
+        }
+    };
+
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -55,6 +70,7 @@ const Appointments = () => {
     const handleCreate = async () => {
         const appointmentData = {
             CustomerId: form.CustomerId,
+            UserId: form.UserId,
             AppointmentDate: form.AppointmentDate,
             Purpose: form.Purpose,
             Status: form.Status
@@ -77,7 +93,8 @@ const Appointments = () => {
         const appointmentData = {
             AppointmentDate: form.AppointmentDate,
             Purpose: form.Purpose,
-            Status: form.Status
+            Status: form.Status,
+            UserId: form.UserId
         };
 
         try {
@@ -117,10 +134,11 @@ const Appointments = () => {
                 AppointmentDate: moment.tz(appointment.AppointmentDate, 'UTC').tz('Europe/Istanbul').format('YYYY-MM-DDTHH:mm'),
                 Purpose: appointment.Purpose,
                 Status: appointment.Status,
+                UserId: appointment.UserId
             });
         } else {
             setIsUpdateMode(false);
-            setForm({ CustomerId: '', AppointmentDate: '', Purpose: '', Status: '' });
+            setForm({ CustomerId: '', AppointmentDate: '', Purpose: '', Status: '', UserId: '' });
         }
         setIsPanelOpen(true);
     };
@@ -153,6 +171,7 @@ const Appointments = () => {
                         <th>Purpose</th>
                         <th>Appointment Date</th>
                         <th>Status</th>
+                        <th>User</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -163,6 +182,7 @@ const Appointments = () => {
                             <td>{appointment.Purpose}</td>
                             <td>{appointment.AppointmentDate}</td>
                             <td>{appointment.Status}</td>
+                            <td>{users.find(user => user.UserId === appointment.UserId)?.FirstName + ' ' + users.find(user => user.UserId === appointment.UserId)?.LastName || 'Unknown'}</td>
                             <td>
                                 <button className="edit-button" onClick={() => openPanel(appointment)}>Edit</button>
                                 <button className="delete-button" onClick={() => { setShowDeleteModal(true); setAppointmentToDelete(appointment); }}>Delete</button>
@@ -190,6 +210,14 @@ const Appointments = () => {
                             <input type="datetime-local" name="AppointmentDate" value={form.AppointmentDate} onChange={handleChange} />
                             <input type="text" name="Purpose" placeholder="Purpose" value={form.Purpose} onChange={handleChange} />
                             <input type="text" name="Status" placeholder="Status" value={form.Status} onChange={handleChange} />
+                            <select name="UserId" value={form.UserId} onChange={handleChange}>
+                                <option value="">Select User</option>
+                                {users.map(user => (
+                                    <option key={user.UserId} value={user.UserId}>
+                                        {user.FirstName} {user.LastName}
+                                    </option>
+                                ))}
+                            </select>
                         </form>
                         <button className="save-button" onClick={isUpdateMode ? handleUpdate : handleCreate}>
                             {isUpdateMode ? 'Update Appointment' : 'Create Appointment'}
