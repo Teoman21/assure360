@@ -37,35 +37,38 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const signUpContext = async (email, password, FirstName, LastName, username) => {
+  const signUpContext = async (email, password, username, firstName, lastName, role) => {
     setIsLoading(true);
     setError(null); // Reset error state
     try {
-      const response = await axios.post('http://localhost:3000/auth/signup', {
-        email,
-        password,
-        FirstName,
-        LastName,
-        username
-      });
-      console.log("SIGNUP ATTEMPT RESPONSE: ", response.data.message);
-      if (response.data && response.data.token && response.data.UserId) {
-        const { token, UserId } = response.data;
-        setUserToken(token);
-        setUserId(UserId);
-        localStorage.setItem('userToken', token); // Save token as a plain string
-        localStorage.setItem('UserId', UserId); // Save user ID as a plain string
-        console.log('Signup successful, token and UserId set:', { token, UserId });
-      } else {
-        console.log('Signup failed:', response.data.message);
-        setError(response.data.message);
-      }
+        const response = await axios.post('http://localhost:3000/auth/signup', {
+            email,
+            password,
+            firstName,
+            lastName,
+            username,
+            role
+        });
+        console.log("SIGNUP ATTEMPT RESPONSE: ", response.data.message);
+        if (response.data && response.data.token && response.data.UserId) {
+            const { token, UserId } = response.data;
+            setUserToken(token);
+            setUserId(UserId);
+            localStorage.setItem('userToken', token); // Save token as a plain string
+            localStorage.setItem('UserId', UserId); // Save user ID as a plain string
+            console.log('Signup successful, token and UserId set:', { token, UserId });
+        } else {
+            console.log('Signup failed:', response.data.message);
+            setError(response.data.message);
+        }
     } catch (error) {
-      console.log(`Signup error: ${error}`);
-      setError('Signup failed due to an error.');
+        console.log(`Signup error: ${error}`);
+        setError('Signup failed due to an error.');
     }
     setIsLoading(false);
-  };
+};
+
+
 
   const logoutContext = () => {
     setIsLoading(true);

@@ -48,9 +48,6 @@ const Login = () => {
         {message && (
           <p className={error ? "error-text" : "success-text"}>{message}</p>
         )}
-        <p>
-          Don't have an account? <span onClick={() => navigate('/auth/signup')}>Sign Up</span>
-        </p>
       </div>
     </div>
   );

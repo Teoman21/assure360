@@ -12,7 +12,7 @@ exports.signup = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const result = await pool.query('INSERT INTO Users (Email, Password, FirstName, LastName, Username) VALUES (?, ?, ?, ?, ?)',
-                         [req.body.email, hashedPassword, req.body.FirstName, req.body.LastName, req.body.username]); 
+                         [req.body.email, hashedPassword, req.body.firstName, req.body.lastName, req.body.username]); 
         const userId = result[0].insertId;
         const token = createToken(userId); // Generate token after successful signup
 
@@ -24,6 +24,7 @@ exports.signup = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error", error: err.toString() });
     }
 };
+
 
 exports.login = async (req, res) => {
     try {
