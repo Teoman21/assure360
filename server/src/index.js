@@ -12,7 +12,7 @@ const userRoute = require("./routes/userRoute.js");
 const { verifyToken } = require('./middlewares/verifyToken.js');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT 
 
 app.use(cors()); // Use CORS
 app.use(express.json());
