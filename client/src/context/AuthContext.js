@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from 'axios';
+import { login, signup } from "../../../server/src/controllers/authController";
 
 export const AuthContext = createContext();
 
@@ -13,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     setError(null); // Reset error state
     try {
-      const response = await axios.post('http://localhost:3000/auth/login', { email, password });
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}`/auth/login, { email, password });
       console.log("LOGIN ATTEMPT RESPONSE: ", response.data.message);
       if (response.data && response.data.token && response.data.UserId) {
         const { token, UserId } = response.data;
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     setError(null); // Reset error state
     try {
-        const response = await axios.post('http://localhost:3000/auth/signup', {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}`/auth/signup, {
             email,
             password,
             firstName,

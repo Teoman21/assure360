@@ -23,10 +23,10 @@ const Claims = () => {
     try {
       const token = localStorage.getItem('userToken');
       const [claimsResponse, policiesResponse] = await Promise.all([
-        axios.get('http://localhost:3000/api/claims', {
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/claims`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:3000/api/policies', {
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/policies`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -50,7 +50,7 @@ const Claims = () => {
   const handleCreate = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      await axios.post('http://localhost:3000/api/claims', form, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/claims`, form, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchClaimsAndPolicies();
@@ -63,7 +63,7 @@ const Claims = () => {
   const handleUpdate = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      await axios.put(`http://localhost:3000/api/claims/${selectedClaim.ClaimId}`, form, {
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/claims/${selectedClaim.ClaimId}`, form, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchClaimsAndPolicies();
@@ -76,7 +76,7 @@ const Claims = () => {
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      await axios.delete(`http://localhost:3000/api/claims/${claimToDelete.ClaimId}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/claims/${claimToDelete.ClaimId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchClaimsAndPolicies();

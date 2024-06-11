@@ -23,10 +23,10 @@ const Policies = () => {
     try {
       const token = localStorage.getItem('userToken');
       const [policiesResponse, companiesResponse] = await Promise.all([
-        axios.get('http://localhost:3000/api/policies', {
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/policies`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:3000/api/customers', {
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customers`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -65,7 +65,7 @@ const Policies = () => {
 
     try {
       const token = localStorage.getItem('userToken');
-      await axios.post('http://localhost:3000/api/policies', policyData, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/policies`, policyData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchPoliciesAndCompanies();
@@ -90,7 +90,7 @@ const Policies = () => {
 
     try {
       const token = localStorage.getItem('userToken');
-      await axios.put(`http://localhost:3000/api/policies/${selectedPolicy.PolicyId}`, policyData, {
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/policies/${selectedPolicy.PolicyId}`, policyData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchPoliciesAndCompanies();
@@ -103,7 +103,7 @@ const Policies = () => {
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      await axios.delete(`http://localhost:3000/api/policies/${policyToDelete.PolicyId}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/policies/${policyToDelete.PolicyId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchPoliciesAndCompanies();

@@ -23,19 +23,19 @@ const Dashboard = () => {
         try {
             const token = localStorage.getItem('userToken');
             const [claimsResponse, appointmentsResponse, policiesResponse, customersResponse, interactionsResponse] = await Promise.all([
-                axios.get('http://localhost:3000/api/claims', {
+                axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/claims`, {
                     headers: { Authorization: `Bearer ${token}` }
                 }),
-                axios.get('http://localhost:3000/api/appointments', {
+                axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/appointments`, {
                     headers: { Authorization: `Bearer ${token}` }
                 }),
-                axios.get('http://localhost:3000/api/policies', {
+                axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/policies`, {
                     headers: { Authorization: `Bearer ${token}` }
                 }),
-                axios.get('http://localhost:3000/api/customers', {
+                axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customers`, {
                     headers: { Authorization: `Bearer ${token}` }
                 }),
-                axios.get('http://localhost:3000/api/interactions', {
+                axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/interactions`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
             ]);

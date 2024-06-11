@@ -20,7 +20,7 @@ const Customers = () => {
   const fetchCustomers = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      const response = await axios.get('http://localhost:3000/api/customers', {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customers`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCustomers(response.data);
@@ -36,7 +36,7 @@ const Customers = () => {
   const handleCreate = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      await axios.post('http://localhost:3000/api/customers', form, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/customers`, form, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchCustomers();
@@ -53,7 +53,7 @@ const Customers = () => {
   const handleUpdate = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      await axios.put(`http://localhost:3000/api/customers/${selectedCustomer.CustomerId}`, form, {
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/customers/${selectedCustomer.CustomerId}`, form, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchCustomers();
@@ -66,7 +66,7 @@ const Customers = () => {
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem('userToken');
-      await axios.delete(`http://localhost:3000/api/customers/${customerToDelete.CustomerId}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/customers/${customerToDelete.CustomerId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchCustomers();

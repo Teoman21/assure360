@@ -20,7 +20,7 @@ const Settings = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/users', {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users`, {
                 headers: { Authorization: `Bearer ${userToken}` }
             });
             const filteredUsers = response.data.filter(user => user.UserId !== parseInt(userId));
@@ -32,7 +32,7 @@ const Settings = () => {
 
     const checkIfAdmin = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/users/me', {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/me`, {
                 headers: { Authorization: `Bearer ${userToken}` }
             });
             if (response.data.role === 'Admin') {
@@ -49,7 +49,7 @@ const Settings = () => {
 
     const handleCreate = async () => {
         try {
-            await axios.post('http://localhost:3000/auth/signup', form, {
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/signup`, form, {
                 headers: { Authorization: `Bearer ${userToken}` }
             });
             fetchUsers();
@@ -62,7 +62,7 @@ const Settings = () => {
 
     const handleDeleteUser = async () => {
         try {
-            await axios.delete(`http://localhost:3000/api/users/${userToDelete.UserId}`, {
+            await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/users/${userToDelete.UserId}`, {
                 headers: { Authorization: `Bearer ${userToken}` }
             });
             fetchUsers();

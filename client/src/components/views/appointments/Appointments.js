@@ -25,10 +25,10 @@ const Appointments = () => {
         try {
             const token = localStorage.getItem('userToken');
             const [customerResponse, appointmentResponse] = await Promise.all([
-                axios.get('http://localhost:3000/api/customers', {
+                axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customers`, {
                     headers: { Authorization: `Bearer ${token}` }
                 }),
-                axios.get('http://localhost:3000/api/appointments', {
+                axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/appointments`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
             ]);
@@ -53,7 +53,7 @@ const Appointments = () => {
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem('userToken');
-            const response = await axios.get('http://localhost:3000/api/users', {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log("Users fetched:", response.data); // Log the users
@@ -78,7 +78,7 @@ const Appointments = () => {
 
         try {
             const token = localStorage.getItem('userToken');
-            await axios.post('http://localhost:3000/api/appointments', appointmentData, {
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/appointments`, appointmentData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchCustomersAndAppointments();
@@ -99,7 +99,7 @@ const Appointments = () => {
 
         try {
             const token = localStorage.getItem('userToken');
-            await axios.put(`http://localhost:3000/api/appointments/${selectedAppointment.AppointmentId}`, appointmentData, {
+            await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/appointments/${selectedAppointment.AppointmentId}`, appointmentData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchCustomersAndAppointments();
@@ -113,7 +113,7 @@ const Appointments = () => {
     const handleDelete = async () => {
         try {
             const token = localStorage.getItem('userToken');
-            await axios.delete(`http://localhost:3000/api/appointments/${appointmentToDelete.AppointmentId}`, {
+            await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/appointments/${appointmentToDelete.AppointmentId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchCustomersAndAppointments();

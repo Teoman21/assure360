@@ -25,10 +25,10 @@ const Interactions = () => {
         try {
             const token = localStorage.getItem('userToken');
             const [customerResponse, interactionResponse] = await Promise.all([
-                axios.get('http://localhost:3000/api/customers', {
+                axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customers`, {
                     headers: { Authorization: `Bearer ${token}` }
                 }),
-                axios.get('http://localhost:3000/api/interactions', {
+                axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/interactions`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
             ]);
@@ -53,7 +53,7 @@ const Interactions = () => {
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem('userToken');
-            const response = await axios.get('http://localhost:3000/api/users', {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUsers(response.data);
@@ -77,7 +77,7 @@ const Interactions = () => {
 
         try {
             const token = localStorage.getItem('userToken');
-            await axios.post('http://localhost:3000/api/interactions', interactionData, {
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/interactions`, interactionData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchCustomersAndInteractions();
@@ -98,7 +98,7 @@ const Interactions = () => {
 
         try {
             const token = localStorage.getItem('userToken');
-            await axios.put(`http://localhost:3000/api/interactions/${selectedInteraction.InteractionId}`, interactionData, {
+            await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/interactions/${selectedInteraction.InteractionId}`, interactionData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchCustomersAndInteractions();
@@ -112,7 +112,7 @@ const Interactions = () => {
     const handleDelete = async () => {
         try {
             const token = localStorage.getItem('userToken');
-            await axios.delete(`http://localhost:3000/api/interactions/${interactionToDelete.InteractionId}`, {
+            await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/interactions/${interactionToDelete.InteractionId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchCustomersAndInteractions();
