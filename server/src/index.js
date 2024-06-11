@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const poolPromise = require('./config/db.js'); 
+const poolPromise = require('./config/db.js');
+require('dotenv').config(); // Load environment variables from .env file
+
 const authRoute = require("./routes/authRoute.js");
 const customerRoute = require("./routes/customerRouter.js");
 const policiesRoute = require('./routes/policiesRouter');
