@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors'); // Import CORS
+const cors = require('cors');
 const poolPromise = require('./config/db.js'); 
 const authRoute = require("./routes/authRoute.js");
 const customerRoute = require("./routes/customerRouter.js");
@@ -14,7 +14,7 @@ const { verifyToken } = require('./middlewares/verifyToken.js');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors()); // Use CORS
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -23,13 +23,12 @@ app.use((req, res, next) => {
     next();
 });
 
-// Ensure the database is connected before starting the server
 async function startServer() {
     try {
-        const pool = await poolPromise; // Ensure the pool is ready
+        const pool = await poolPromise;
         const connection = await pool.getConnection();
         console.log("Connected to MySQL database");
-        connection.release(); // Release the connection back to the pool
+        connection.release();
 
         app.use('/auth', authRoute);
 
@@ -46,7 +45,7 @@ async function startServer() {
         });
     } catch (err) {
         console.error("Error connecting to the database: ", err.message);
-        process.exit(1); // Exit if we cannot connect to the database
+        process.exit(1);
     }
 }
 
